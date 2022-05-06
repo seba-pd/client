@@ -50,6 +50,7 @@ public class ChatClient {
             while (!memberService.checkIfMemberExist(memberName = scanner.nextLine())) {
                 System.out.println("Member not found");
             }
+            memberService.joinToChannels(memberName);
         }
         System.out.println("Welcome");
         return memberName;

@@ -40,6 +40,7 @@ public class ClientUi {
             case "Channel already exist" -> System.out.println("Channel already exist");
             case "Channel not found" -> System.out.println("Wrong channel name");
             case "Member not exist in channel" -> System.out.println("Member not exist in channel");
+            case "Member already exist in channel" -> System.out.println("Member already exist in channel");
             case "File not found" -> System.out.println("File not found");
             case "Member not found" -> System.out.println("Member not found");
             case "Message not found" -> System.out.println("Message not found");

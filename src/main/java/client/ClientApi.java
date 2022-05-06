@@ -14,8 +14,9 @@ import java.util.Base64;
 @Log
 public class ClientApi {
 
+    private final HttpClient httpClient = HttpClientBuilder.create().build();
+
     public String sendMessage(String channelName, String messageContent, String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         String jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \""
                 + channelName + "\"," + "\"content\" : \"" + messageContent + "\"}";
         HttpPost request = new HttpPost(url);
@@ -23,7 +24,6 @@ public class ClientApi {
     }
 
     public String sendFile(String fileName, String channelName, byte[] content, String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(url);
         var requestContent = Base64.getEncoder().encodeToString(content);
         String jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \""
@@ -34,7 +34,6 @@ public class ClientApi {
 
     @SneakyThrows
     public String getHistory(String channelName, String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         String requestUrl = url + "/" + channelName + "/" + memberName;
         HttpGet request = new HttpGet(requestUrl);
         var response = httpClient.execute(request);
@@ -43,7 +42,6 @@ public class ClientApi {
 
     @SneakyThrows
     public String receiveFile(String fileName, String memberName, String channelName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         String requestUrl = url + "/" + channelName + "/" + memberName + "/" + fileName;
         HttpGet request = new HttpGet(requestUrl);
         var response = httpClient.execute(request);
@@ -62,7 +60,6 @@ public class ClientApi {
     }
 
     public String addMember(String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         String jsonInputString = "{\"memberName\" : \"" + memberName + "\"}";
         HttpPost request = new HttpPost(url);
         return executePostRequest(httpClient, jsonInputString, request);
@@ -70,7 +67,6 @@ public class ClientApi {
 
     @SneakyThrows
     public String checkIfMemberExist(String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         var requestUrl = url + memberName;
         HttpGet request = new HttpGet(requestUrl);
         var response = httpClient.execute(request);
@@ -78,16 +74,22 @@ public class ClientApi {
     }
 
     public String joinToChannel(String channelName, String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(url);
         String jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \"" + channelName + "\"}";
         return executePostRequest(httpClient, jsonInputString, request);
     }
 
     public String exitFromChannel(String channelName, String memberName, String url) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(url);
         String jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \"" + channelName + "\"}";
         return executePostRequest(httpClient, jsonInputString, request);
+    }
+
+    @SneakyThrows
+    public String getChannelListToJoin(String memberName, String url) {
+        var requestUrl = url + "/" + memberName;
+        HttpGet request = new HttpGet(requestUrl);
+        var response = httpClient.execute(request);
+        return EntityUtils.toString(response.getEntity());
     }
 }
