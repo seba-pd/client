@@ -34,7 +34,7 @@ public class JmsService {
                 }
             });
             con.start();
-            Thread.sleep(100000);
+            Thread.sleep(1000000);
         } catch (JMSException | InterruptedException e1) {
             e1.printStackTrace();
         } finally {

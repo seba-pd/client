@@ -16,9 +16,10 @@ public class ChannelService {
     private final ClientApi clientApi = new ClientApi();
     private final ClientUi clientUi = new ClientUi();
     private static final String HISTORY_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/history";
+    private static final String ADD_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channels/add_channel";
     private static final String SEND_MESSAGE_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/message/send";
     private static final String SEND_FILE_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/file/send_file";
-    private static final String RECEIVE_FILE_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/file/receive_file";
+    private static final String RECEIVE_FILE_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/file";
     private static final String JOIN_TO_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/add_member_to_channel";
     private static final String EXIT_FROM_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/remove_member_from_channel";
 
@@ -94,6 +95,13 @@ public class ChannelService {
         var channelName = scanner.nextLine();
         var response = clientApi.exitFromChannel(channelName,memberName,EXIT_FROM_CHANNEL_URL);
         clientUi.exitFromChannel(response);
+    }
+
+    public void addChannel(Scanner scanner, String memberName) {
+        System.out.println("Enter channel name: ");
+        var channelName = scanner.nextLine();
+        var response = clientApi.addChannel(channelName,memberName,ADD_CHANNEL_URL);
+        clientUi.addChannel(response);
     }
 }
 

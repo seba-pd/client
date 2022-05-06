@@ -14,7 +14,7 @@ public class ChatClient {
         ExecutorService executor = Executors.newFixedThreadPool(10);
 
         Scanner scanner = new Scanner(System.in);
-        var memberName = chatClient.login(scanner, memberService);
+        var memberName = chatClient.login(scanner, memberService, executor);
 
         while (true) {
             String input = scanner.nextLine();
@@ -24,6 +24,8 @@ public class ChatClient {
                 case "/h" -> channelService.getHistory(scanner, memberName);
                 case "/sf" -> channelService.sendFile(scanner, memberName);
                 case "/rf" -> channelService.receiveFile(scanner, memberName);
+                case "/rc" -> channelService.exitFromChannel(scanner, memberName);
+                case "/ac" -> channelService.addChannel(scanner, memberName);
                 case "/jc" -> {
                     System.out.println("Enter channel name: ");
                     var channelName = scanner.nextLine();
@@ -31,12 +33,12 @@ public class ChatClient {
                         executor.execute(new Thread(() -> jmsService.listenChannel(channelName)));
                     }
                 }
-                case "/rc" -> channelService.exitFromChannel(scanner, memberName);
+                default -> System.out.println("Wrong command");
             }
         }
     }
 
-    private String login(Scanner scanner, MemberService memberService) {
+    private String login(Scanner scanner, MemberService memberService, ExecutorService executor) {
         System.out.println("Do you want create new member \"n\" ?");
         String memberName;
         var isNew = scanner.nextLine();
@@ -50,7 +52,7 @@ public class ChatClient {
             while (!memberService.checkIfMemberExist(memberName = scanner.nextLine())) {
                 System.out.println("Member not found");
             }
-            memberService.joinToChannels(memberName);
+            memberService.joinToPreviousChannels(memberName, executor);
         }
         System.out.println("Welcome");
         return memberName;

@@ -28,6 +28,11 @@ public class ClientUi {
         System.out.println("You left from channel");
     }
 
+    public void addChannel(String response){
+        if(errorCatch(response)) return;
+        System.out.println("You create a channel");
+    }
+
     @SneakyThrows
     public void writeMessage(String response){
         if(errorCatch(response)) return;
