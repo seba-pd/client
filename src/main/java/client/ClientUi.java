@@ -23,9 +23,10 @@ public class ClientUi {
         return true;
     }
 
-    public void exitFromChannel(String response) {
-        if(errorCatch(response)) return;
+    public boolean exitFromChannel(String response) {
+        if(errorCatch(response)) return false;
         System.out.println("You left from channel");
+        return true;
     }
 
     public void addChannel(String response){

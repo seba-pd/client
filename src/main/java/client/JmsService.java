@@ -7,43 +7,53 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
-public class JmsService {
+public class JmsService implements Runnable{
+
+    private final String memberName;
+    private final String channelName;
+
+    public JmsService(String memberName, String channelName) {
+        this.memberName = memberName;
+        this.channelName = channelName;
+    }
 
     private final ClientUi clientUi = new ClientUi();
 
-    public void listenChannel(String channelName) {
+    public void listenChannel(String channelName, String memberName) {
         ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Connection con = null;
 
         try {
             con = factory.createConnection();
+            con.setClientID(memberName);
+            con.start();
             Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic topic = session.createTopic(channelName);
 
-            MessageConsumer consumer = session.createConsumer(topic);
+            MessageConsumer consumer = session.createDurableSubscriber(topic, memberName);
 
-            consumer.setMessageListener(msg -> {
-                try {
-                    if (!(msg instanceof TextMessage tm))
-                        throw new RuntimeException("no text message");
-                    ObjectMapper mapper = new ObjectMapper();
-                    var message = mapper.readValue(tm.getText(), Message.class);
-                    clientUi.printMessage(message);
-                } catch (JMSException | JsonProcessingException e) {
-                    System.err.println("Error reading message");
+            javax.jms.Message message;
+
+            while (true) {
+                message = consumer.receive(1000);
+                if (message instanceof TextMessage textMessage) {
+                    mapTextToMessage(textMessage);
                 }
-            });
-            con.start();
-            Thread.sleep(1000000);
-        } catch (JMSException | InterruptedException e1) {
-            e1.printStackTrace();
-        } finally {
-            try {
-                assert con != null;
-                con.close();
-            } catch (JMSException e) {
-                e.printStackTrace();
             }
+        } catch (JMSException | JsonProcessingException e1) {
+            e1.printStackTrace();
         }
+
+    }
+
+    private void mapTextToMessage (TextMessage tm) throws JMSException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        var message = mapper.readValue(tm.getText(), Message.class);
+        clientUi.printMessage(message);
+    }
+
+    @Override
+    public void run() {
+        listenChannel(channelName,memberName);
     }
 }

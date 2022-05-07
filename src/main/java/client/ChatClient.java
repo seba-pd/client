@@ -1,8 +1,6 @@
 package client;
 
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ChatClient {
 
@@ -10,11 +8,9 @@ public class ChatClient {
         ChatClient chatClient = new ChatClient();
         ChannelService channelService = new ChannelService();
         MemberService memberService = new MemberService();
-        JmsService jmsService = new JmsService();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
 
         Scanner scanner = new Scanner(System.in);
-        var memberName = chatClient.login(scanner, memberService, executor);
+        var memberName = chatClient.login(scanner, channelService,memberService);
 
         while (true) {
             String input = scanner.nextLine();
@@ -24,21 +20,15 @@ public class ChatClient {
                 case "/h" -> channelService.getHistory(scanner, memberName);
                 case "/sf" -> channelService.sendFile(scanner, memberName);
                 case "/rf" -> channelService.receiveFile(scanner, memberName);
-                case "/rc" -> channelService.exitFromChannel(scanner, memberName);
                 case "/ac" -> channelService.addChannel(scanner, memberName);
-                case "/jc" -> {
-                    System.out.println("Enter channel name: ");
-                    var channelName = scanner.nextLine();
-                    if (channelService.joinToChannel(channelName, memberName)) {
-                        executor.execute(new Thread(() -> jmsService.listenChannel(channelName)));
-                    }
-                }
+                case "/rc" -> memberService.exitFromChannel(memberName,channelService,scanner);
+                case "/jc" -> memberService.joinToChannel(memberName,channelService,scanner);
                 default -> System.out.println("Wrong command");
             }
         }
     }
 
-    private String login(Scanner scanner, MemberService memberService, ExecutorService executor) {
+    private String login(Scanner scanner, ChannelService channelService, MemberService memberService) {
         System.out.println("Do you want create new member \"n\" ?");
         String memberName;
         var isNew = scanner.nextLine();
@@ -52,7 +42,7 @@ public class ChatClient {
             while (!memberService.checkIfMemberExist(memberName = scanner.nextLine())) {
                 System.out.println("Member not found");
             }
-            memberService.joinToPreviousChannels(memberName, executor);
+            memberService.joinToPreviousChannels(memberName,channelService);
         }
         System.out.println("Welcome");
         return memberName;

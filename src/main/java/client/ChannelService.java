@@ -90,11 +90,9 @@ public class ChannelService {
         return clientUi.joinToChannel(response);
     }
 
-    public void exitFromChannel(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        var channelName = scanner.nextLine();
+    public boolean exitFromChannel(String channelName, String memberName) {
         var response = clientApi.exitFromChannel(channelName,memberName,EXIT_FROM_CHANNEL_URL);
-        clientUi.exitFromChannel(response);
+        return clientUi.exitFromChannel(response);
     }
 
     public void addChannel(Scanner scanner, String memberName) {
