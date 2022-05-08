@@ -1,5 +1,6 @@
 package client;
 
+import client.ui.ClientUi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,13 @@ public class Client {
     private final ChannelService channelService;
     private final MemberService memberService;
     private final Scanner scanner;
+    private final ClientUi clientUi;
     private Connection connection;
 
     public void start() {
 
         var memberName = login();
+        clientUi.showOption();
 
         while (true) {
             String input = scanner.nextLine();
@@ -32,7 +35,7 @@ public class Client {
                 case "/sf" -> channelService.sendFile(memberName);
                 case "/rf" -> channelService.receiveFile(memberName);
                 case "/ac" -> channelService.addChannel(memberName);
-                case "/rc" -> memberService.exitFromChannel(memberName);
+                case "/ec" -> memberService.exitFromChannel(memberName);
                 case "/jc" -> memberService.joinToChannel(memberName,channelService.getChannelNameFromConsole(),connection);
                 default -> System.out.println("Wrong command");
             }

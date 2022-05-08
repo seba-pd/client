@@ -24,7 +24,6 @@ public class JmsService extends Thread{
         this.connection = connection;
     }
 
-
     public void listenChannel(String channelName,Connection con) {
         try {
             Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);

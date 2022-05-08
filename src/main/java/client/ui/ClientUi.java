@@ -61,4 +61,15 @@ public class ClientUi {
         System.out.println(message.getCreateTime() + " : " + message.getChannelName() + " : " +
                 message.getMemberName() + " : " + message.getContent());
     }
+
+    public void showOption() {
+        System.out.println("/s - send a file to channel");
+        System.out.println("/h - get channel history");
+        System.out.println("/sf - send file to channel");
+        System.out.println("/rf - receive file from channel");
+        System.out.println("/ac - add channel");
+        System.out.println("/ec - exit from channel");
+        System.out.println("/jc - join to channel channel");
+        System.out.println();
+    }
 }
