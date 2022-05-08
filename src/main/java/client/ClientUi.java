@@ -1,18 +1,20 @@
 package client;
 
+import client.commons.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Singleton;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 
 import java.util.Arrays;
 
-@Log
+@Singleton
 public class ClientUi {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @SneakyThrows
     public void writeHistory(String response){
         if(errorCatch(response)) return;
-        ObjectMapper mapper = new ObjectMapper();
         var messageList = Arrays.asList(mapper.readValue(response, Message[].class));
         messageList.forEach(this::printMessage);
     }

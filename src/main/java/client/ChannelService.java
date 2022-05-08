@@ -1,7 +1,11 @@
 package client;
 
+import client.commons.File;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,10 +15,10 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Scanner;
 
+@Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class ChannelService {
 
-    private final ClientApi clientApi = new ClientApi();
-    private final ClientUi clientUi = new ClientUi();
     private static final String HISTORY_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/history";
     private static final String ADD_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channels/add_channel";
     private static final String SEND_MESSAGE_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/message/send";
@@ -23,26 +27,27 @@ public class ChannelService {
     private static final String JOIN_TO_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/add_member_to_channel";
     private static final String EXIT_FROM_CHANNEL_URL = "http://localhost:8080/chat1b-1.0-SNAPSHOT/chat/channel/remove_member_from_channel";
 
-    public void sendMessage(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        String channelName = scanner.nextLine();
+    private final ClientUi clientUi ;
+    private final ClientApi clientApi ;
+    private final Scanner scanner;
+
+    public void sendMessage(String memberName) {
+        var channelName = getChannelNameFromConsole();
         System.out.println("Enter text: ");
         String messageContent = scanner.nextLine();
         var response = clientApi.sendMessage(channelName, messageContent, memberName, SEND_MESSAGE_URL);
         clientUi.writeMessage(response);
     }
 
-    public void getHistory(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        String channelName = scanner.nextLine();
+    public void getHistory( String memberName) {
+        var channelName = getChannelNameFromConsole();
         var response = clientApi.getHistory(channelName, memberName, HISTORY_URL);
         clientUi.writeHistory(response);
     }
 
 
-    public void sendFile(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        var channelName = scanner.nextLine();
+    public void sendFile( String memberName) {
+        var channelName = getChannelNameFromConsole();
         System.out.println("Enter file name: ");
         var fileName = scanner.nextLine();
         System.out.println("Enter file path: ");
@@ -56,9 +61,8 @@ public class ChannelService {
     }
 
 
-    public void receiveFile(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        var channelName = scanner.nextLine();
+    public void receiveFile( String memberName) {
+        var channelName = getChannelNameFromConsole();
         System.out.println("Enter file name: ");
         var fileName = scanner.nextLine();
         System.out.println("Enter path to save file: ");
@@ -95,11 +99,15 @@ public class ChannelService {
         return clientUi.exitFromChannel(response);
     }
 
-    public void addChannel(Scanner scanner, String memberName) {
-        System.out.println("Enter channel name: ");
-        var channelName = scanner.nextLine();
+    public void addChannel(String memberName) {
+        var channelName = getChannelNameFromConsole();
         var response = clientApi.addChannel(channelName,memberName,ADD_CHANNEL_URL);
         clientUi.addChannel(response);
+    }
+
+    public String getChannelNameFromConsole() {
+        System.out.println("Enter channel name: ");
+        return scanner.nextLine();
     }
 }
 

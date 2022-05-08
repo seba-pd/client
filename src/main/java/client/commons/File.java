@@ -1,4 +1,4 @@
-package client;
+package client.commons;
 
 import lombok.Data;
 

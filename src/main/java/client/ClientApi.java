@@ -1,21 +1,24 @@
 package client;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.util.Base64;
 
-@Log
+@Singleton
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class ClientApi {
 
-    private final HttpClient httpClient = HttpClientBuilder.create().build();
+    private final HttpClient httpClient;
 
     public String sendMessage(String channelName, String messageContent, String memberName, String url) {
         var jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \""
@@ -65,9 +68,15 @@ public class ClientApi {
         return executePostRequest(httpClient, jsonInputString, url);
     }
 
+    @SneakyThrows
     public String exitFromChannel(String channelName, String memberName, String url) {
-        var jsonInputString = "{\"memberName\" : \"" + memberName + "\",\"channelName\" : \"" + channelName + "\"}";
-        return executePostRequest(httpClient, jsonInputString, url);
+        var requestUrl = new URIBuilder(url)
+                .addParameter("memberName", memberName)
+                .addParameter("channelName", channelName)
+                .toString();
+        HttpDelete request = new HttpDelete(requestUrl);
+        var response = httpClient.execute(request);
+        return EntityUtils.toString(response.getEntity());
     }
 
     @SneakyThrows
