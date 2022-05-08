@@ -30,8 +30,8 @@ public class Client {
             String input = scanner.nextLine();
             if (input.equals("/exit chat")) break;
             switch (input) {
-                case "/s " -> channelService.sendMessage(memberName);
-                case "/h " -> channelService.getHistory(memberName);
+                case "/s" -> channelService.sendMessage(memberName);
+                case "/h" -> channelService.getHistory(memberName);
                 case "/sf" -> channelService.sendFile(memberName);
                 case "/rf" -> channelService.receiveFile(memberName);
                 case "/ac" -> channelService.addChannel(memberName);
