@@ -69,7 +69,7 @@ public class ClientUi {
         System.out.println("/rf - receive file from channel");
         System.out.println("/ac - add channel");
         System.out.println("/ec - exit from channel");
-        System.out.println("/jc - join to channel channel");
+        System.out.println("/jc - join to channel ");
         System.out.println();
     }
 }
