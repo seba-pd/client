@@ -28,7 +28,7 @@ public class MemberService {
 
     void joinToChannel(String memberName, String channelName, Connection connection) {
         if(channelService.joinToChannel(channelName,memberName)) {
-            var channelListener = new JmsService(memberName, channelName, connection);
+            var channelListener = new JmsService(channelName, connection);
             channelListener.setDaemon(true);
             activeChannelThreadList.put(channelName, channelListener);
             channelListener.start();
@@ -46,11 +46,18 @@ public class MemberService {
 
     public void joinToPreviousChannels(String memberName,Connection connection) {
         var response = clientApi.getChannelListToJoin(memberName, GET_CHANNELS_URL);
-        Arrays.stream(response.split(",")).forEach(c -> joinToChannel(memberName,c,connection));
+        Arrays.stream(response.split(",")).forEach(c -> joinToPreviousChannel(c,connection));
     }
 
     public boolean checkIfMemberExist(String memberName) {
         var response = clientApi.checkIfMemberExist(memberName, CHECK_IF_MEMBER_EXIST);
         return response.equals("Member not found");
+    }
+
+    private void joinToPreviousChannel(String channelName, Connection connection){
+        var channelListener = new JmsService(channelName, connection);
+        channelListener.setDaemon(true);
+        activeChannelThreadList.put(channelName, channelListener);
+        channelListener.start();
     }
 }

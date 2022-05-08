@@ -15,7 +15,7 @@ import javax.jms.*;
 
 public class JmsService extends Thread{
 
-    private  final String memberName;
+
     private  final String channelName;
     private final Connection connection;
     @Setter
@@ -23,24 +23,24 @@ public class JmsService extends Thread{
     @Setter
     private boolean isStop = false;
 
-    public JmsService(String memberName, String channelName,Connection connection) {
-        this.memberName = memberName;
+    public JmsService( String channelName,Connection connection) {
+
         this.channelName = channelName;
         this.connection = connection;
     }
 
 
-    public void listenChannel(String channelName, String memberName,Connection con) {
+    public void listenChannel(String channelName,Connection con) {
         try {
             Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Topic topic = session.createTopic(channelName);
 
-            MessageConsumer consumer = session.createDurableSubscriber(topic, memberName);
+            MessageConsumer consumer = session.createConsumer(topic);
 
             javax.jms.Message message;
 
             while (true) {
-                message = consumer.receive(1000);
+                message = consumer.receive();
                 if (message instanceof TextMessage textMessage) {
                     mapTextToMessage(textMessage);
                     if (isStop) {
@@ -63,6 +63,6 @@ public class JmsService extends Thread{
 
     @Override
     public void run() {
-        listenChannel(channelName,memberName,connection);
+        listenChannel(channelName,connection);
     }
 }
