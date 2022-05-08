@@ -61,7 +61,7 @@ public class Client {
     }
 
     private String login() {
-        System.out.println("Do you want create new member \"n\" ?");
+        System.out.println("Do you want create new member \"n\" ? if not press enter");
         String memberName;
         var isNew = scanner.nextLine();
         if (isNew.equals("n")) {
