@@ -69,7 +69,7 @@ public class ChatClient {
             connection = createBrokerConnection(memberName);
         } else {
             System.out.println("Enter name : ");
-            while (!memberService.checkIfMemberExist(memberName = scanner.nextLine())) {
+            while (memberService.checkIfMemberExist(memberName = scanner.nextLine())) {
                 System.out.println("Member not found");
             }
             connection = createBrokerConnection(memberName);
