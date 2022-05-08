@@ -1,5 +1,6 @@
 package client;
 
+import client.api.ClientApi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;

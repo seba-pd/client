@@ -1,6 +1,8 @@
 package client;
 
+import client.api.ClientApi;
 import client.commons.File;
+import client.ui.ClientUi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
@@ -30,6 +32,12 @@ public class ChannelService {
     private final ClientUi clientUi ;
     private final ClientApi clientApi ;
     private final Scanner scanner;
+
+    public void addChannel(String memberName) {
+        var channelName = getChannelNameFromConsole();
+        var response = clientApi.addChannel(channelName,memberName,ADD_CHANNEL_URL);
+        clientUi.addChannel(response);
+    }
 
     public void sendMessage(String memberName) {
         var channelName = getChannelNameFromConsole();
@@ -97,12 +105,6 @@ public class ChannelService {
     public boolean exitFromChannel(String channelName, String memberName) {
         var response = clientApi.exitFromChannel(channelName,memberName,EXIT_FROM_CHANNEL_URL);
         return clientUi.exitFromChannel(response);
-    }
-
-    public void addChannel(String memberName) {
-        var channelName = getChannelNameFromConsole();
-        var response = clientApi.addChannel(channelName,memberName,ADD_CHANNEL_URL);
-        clientUi.addChannel(response);
     }
 
     public String getChannelNameFromConsole() {

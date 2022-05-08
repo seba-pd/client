@@ -1,4 +1,4 @@
-package client;
+package client.api;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

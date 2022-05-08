@@ -1,14 +1,9 @@
 package client;
 
+import client.ui.ClientUi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 

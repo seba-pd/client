@@ -1,4 +1,4 @@
-package client;
+package client.ui;
 
 import client.commons.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
